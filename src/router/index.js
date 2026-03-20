@@ -39,4 +39,23 @@ const router = new VueRouter({
   ]
 })
 
+// 拦截路径
+const authUrls = ['/pay', '/myorder']
+
+router.beforeEach((to, from, next) => {
+  // 直接写这个函数，表示所有都放行
+  // next()
+  if(!authUrls.includes(to.path)) {
+    next()
+    return 
+  }
+
+  const token = store.getters.token
+  if (token) {
+    next()
+  }else{
+    next('/login')
+  }
+})
+
 export default router
