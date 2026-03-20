@@ -8,6 +8,11 @@ import ProDetail from '@/views/prodetail/ProdetailIndex.vue'
 import Pay from '@/views/pay/PayIndex.vue'
 import MyOrder from '@/views/myorder/OrderIndex.vue'
 
+import Home from '@/views/layout/HomeLayout.vue'
+import Category from '@/views/layout/CategoryLayout.vue'
+import Cart from '@/views/layout/CartLayout.vue'
+import User from '@/views/layout/UserLayout.vue'
+
 Vue.use(VueRouter)
 
 // const routes = [
@@ -16,13 +21,21 @@ Vue.use(VueRouter)
 const router = new VueRouter({
   routes: [
     { path: '/login', component: Login },
-    { path: '/', component: Layout },
+    {
+      path: '/',
+      component: Layout,
+      children: [
+        { path: '/home', component: Home },
+        { path: '/category', component: Category },
+        { path: '/cart', component: Cart },
+        { path: '/user', component: User }
+      ]
+    },
     { path: '/search', component: Search },
     { path: '/searchList', component: SearchList },
     { path: '/prodetail', component: ProDetail },
     { path: '/pay', component: Pay },
     { path: '/myOrder', component: MyOrder }
-
   ]
 })
 
