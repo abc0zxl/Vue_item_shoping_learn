@@ -31,9 +31,9 @@
         </div>
         <div class="form-item">
           <input class="inp" placeholder="请输入短信验证码" type="text">
-          <!-- <button>
+          <button @click="getCode">
             {{ second === totalSecond ? '获取验证码' : second + '秒后重新发送'}}
-          </button> -->
+          </button>
         </div>
       </div>
       <div class="login-btn">登录</div>
@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { getPicCode } from '@/api/login'
+import { codeLogin, getPicCode, getMsgCode } from '@/api/login'
 // import { Toast } from 'vant'
 
 export default {
@@ -68,6 +68,37 @@ export default {
       const { data: { base64, key } } = await getPicCode()
       this.picUrl = base64 // 存储地址
       this.picKey = key // 存储唯一标识
+    },
+    // 图像验证码
+    async getCode () {
+      if (!this.timer && this.second === this.totalSecond) {
+        //  判断图形验证码是否为空,以及返回的状态码是否为200,如果不是,就不执行后续操作,并抛出一个错误
+        //  这个在拦截器中判断最合适
+        await getMsgCode(this.picCode, this.picKey, this.mobile)
+        this.$toast('验证码已发送，请注意查收')
+        this.timer = setInterval(() => {
+          this.second--
+          if (this.second <= 0) {
+            clearInterval(this.timer)
+            this.timer = null
+            this.second = this.totalSecond
+          }
+        }, 1000)
+      }
+    },
+    // 手机验证码
+    async login () {
+      if (!/^\d{6}$/.test(this.msgCode)) {
+        this.$toast('验证码格式不正确')
+        return
+      }
+      const res = await codeLogin(this.mobile, this.msgCode)
+      // 将用户信息存储到 vuex 中
+      this.$store.commit('user/setUserInfo', res.data)
+      console.log(res)
+      this.$toast('登录成功')
+      // 编程式导航,点击后跳转到首页
+      this.$router.push('/')
     }
   }
 }

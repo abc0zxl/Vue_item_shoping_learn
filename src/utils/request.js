@@ -1,5 +1,6 @@
 // 引入axios
 import axios from 'axios'
+import { Toast } from 'vant'
 // 引入store
 // import store from '@/store'
 const instance = axios.create({
@@ -20,7 +21,16 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (response) {
   // 2xx 范围内的状态码都会触发该函数。
   // 对响应数据做点什么
-  return response.data
+  const res = response.data
+  // 这里接收到的是一个对象,对象中包含了状态码,状态信息,数据等
+  console.log(res)
+  if (res.status !== 200) {
+    // 给提示
+    Toast(res.message)
+    // 抛出一个错误
+    return Promise.reject(res.message)
+  }
+  return res
 }, function (error) {
   // 超出 2xx 范围的状态码都会触发该函数。
   // 对响应错误做点什么
