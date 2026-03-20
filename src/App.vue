@@ -1,13 +1,16 @@
 <template>
   <div id="app">
     <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <van-button type="primary">主要按钮</van-button>
+      <van-button type="info">信息按钮</van-button>
+      <van-button type="default">默认按钮</van-button>
+      <van-switch v-model="checked" />
     </nav>
     <router-view/>
   </div>
 </template>
-
+<script>
+</script>
 <style lang="less">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
